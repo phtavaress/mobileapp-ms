@@ -11,6 +11,11 @@ public class UserController {
         return "getUser() was called with id: " + id;
     }
 
+    @GetMapping()
+    public String getUser(@RequestParam(value = "page") int page, @RequestParam(value = "limit") int limit) {
+        return "getUser() was called with page = " + page + " and limit = " + limit;
+    }
+
     @PostMapping
     public String createUser() {
         return "createUser() was called";
