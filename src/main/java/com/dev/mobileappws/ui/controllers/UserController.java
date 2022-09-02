@@ -1,19 +1,24 @@
 package com.dev.mobileappws.ui.controllers;
 
+import com.dev.mobileappws.ui.model.request.UserDetailsRequest;
 import com.dev.mobileappws.ui.model.response.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("users")
 public class UserController {
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable String id) {
+    public ResponseEntity<User> getUser(@PathVariable String id) {
         User returnedValue = new User();
         returnedValue.setEmail("test@test.com");
         returnedValue.setFirstName("Pedro");
         returnedValue.setLastName("Tavares");
-        return returnedValue;
+        return new ResponseEntity<User>(returnedValue, HttpStatus.OK);
     }
 
     @GetMapping()
@@ -26,8 +31,12 @@ public class UserController {
     }
 
     @PostMapping
-    public String createUser() {
-        return "createUser() was called";
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserDetailsRequest userDetailsRequest) {
+        User returnedValue = new User();
+        returnedValue.setEmail(userDetailsRequest.getEmail());
+        returnedValue.setFirstName(userDetailsRequest.getFirstName());
+        returnedValue.setLastName(userDetailsRequest.getLastName());
+        return new ResponseEntity<User>(returnedValue, HttpStatus.OK);
     }
 
     @PutMapping
