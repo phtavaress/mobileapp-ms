@@ -1,5 +1,6 @@
 package com.dev.mobileappws.ui.controllers;
 
+import com.dev.mobileappws.ui.model.response.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -7,8 +8,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @GetMapping("/{id}")
-    public String getUser(@PathVariable String id) {
-        return "getUser() was called with id: " + id;
+    public User getUser(@PathVariable String id) {
+        User returnedValue = new User();
+        returnedValue.setEmail("test@test.com");
+        returnedValue.setFirstName("Pedro");
+        returnedValue.setLastName("Tavares");
+        return returnedValue;
     }
 
     @GetMapping()
