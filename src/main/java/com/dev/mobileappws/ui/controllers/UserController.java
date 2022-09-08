@@ -1,5 +1,6 @@
 package com.dev.mobileappws.ui.controllers;
 
+import com.dev.mobileappws.ui.model.request.UpdateUserDetail;
 import com.dev.mobileappws.ui.model.request.UserDetailsRequest;
 import com.dev.mobileappws.ui.model.response.User;
 import org.springframework.http.HttpStatus;
@@ -7,18 +8,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("users")
 public class UserController {
 
+    Map<String, User> users;
+
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
-        User returnedValue = new User();
-        returnedValue.setEmail("test@test.com");
-        returnedValue.setFirstName("Pedro");
-        returnedValue.setLastName("Tavares");
-        return new ResponseEntity<User>(returnedValue, HttpStatus.OK);
+        if(users.containsKey(id)) {
+            return new ResponseEntity<User>(users.get(id), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 
     @GetMapping()
@@ -36,12 +42,20 @@ public class UserController {
         returnedValue.setEmail(userDetailsRequest.getEmail());
         returnedValue.setFirstName(userDetailsRequest.getFirstName());
         returnedValue.setLastName(userDetailsRequest.getLastName());
+        String userId = UUID.randomUUID().toString();
+        returnedValue.setUserId(userId);
+        if(users == null) users = new HashMap<>();
+        users.put(userId, returnedValue);
         return new ResponseEntity<User>(returnedValue, HttpStatus.OK);
     }
 
-    @PutMapping
-    public String updateUser() {
-        return "updateUser() was called";
+    @PutMapping("{id}")
+    public User updateUser(@PathVariable String id, @Valid @RequestBody UpdateUserDetail updateUserDetail) {
+        User storedUser = users.get(id);
+        storedUser.setFirstName(updateUserDetail.getFirstName());
+        storedUser.setLastName(updateUserDetail.getLastName());
+        users.put(id, storedUser);
+        return storedUser;
     }
 
     @DeleteMapping
